@@ -1,29 +1,16 @@
-class CrudRepository {
+import CrudRepository from "./crudRepository.js";
+
+class UserRepository extends CrudRepository {
   constructor(model) {
-    this.model = model;
+    super(model);
   }
-  async create(data) {
-    const response = await this.model.create(data);
+  async getUserByEmail(email) {
+    const response = await this.model.findOne({ email: email });
     return response;
   }
-  async getAll() {
-    const response = await this.model.find({});
-    return response;
-  }
-  async getById(id) {
-    const response = await this.model.findById(id);
-    return response;
-  }
-  async destroy(id) {
-    const response = await this.model.findByIdAndDelete(id);
-    return response;
-  }
-  async update(id, data) {
-    const response = await this.model.findByIdAndUpdate(id, data, {
-      new: true,
-      runValidators: true,
-    });
+  async getUserByUsername(username) {
+    const response = await this.model.findOne({ username: username });
     return response;
   }
 }
-export default CrudRepository;
+export default UserRepository;
