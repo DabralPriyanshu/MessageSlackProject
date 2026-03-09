@@ -20,14 +20,14 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.pre("save", async function saveUser(next) {
   if (!this.isModified("password")) {
-    next();
+    return next;
   }
   this.password = await bcrypt.hash(this.password, 10);
 
   if (this.isNew) {
     this.avatar = `https://robohash.org/${this.username}`;
   }
-  next();
+  return next;
 });
 
 const User = mongoose.model("User", userSchema);

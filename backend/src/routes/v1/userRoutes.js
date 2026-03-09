@@ -1,9 +1,7 @@
 import express from "express";
-import { StatusCodes } from "http-status-codes";
+import userController from "../../controllers/userController.js";
 const userRouter = express.Router();
 
-userRouter.get("/", (req, res) => {
-  res.status(StatusCodes.NOT_IMPLEMENTED).json({ users: [] });
-});
+userRouter.post("/signup", userController.signUp);
 
 export default userRouter;

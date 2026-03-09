@@ -1,4 +1,4 @@
-import ValidationError from "../utils/errors/validationError";
+import ValidationError from "../utils/errors/validationError.js";
 
 class UserService {
   constructor(userRepository) {
@@ -6,22 +6,22 @@ class UserService {
   }
   async signUp(data) {
     try {
-      return this.userRepository.create(data);
+      return await this.userRepository.create(data);
     } catch (error) {
       console.log(error);
-      if (error.name == "ValidationError") {
+      if (error.name === "ValidationError") {
         throw new ValidationError(
           {
             error: error.errors,
           },
           error.message || "User validation failed",
         );
-      } else if (error.name == "MongoServerError" && error.code == 11000) {
+      } else if (error.name === "MongoServerError" || error.code === 11000) {
         throw new ValidationError(
           {
             error: ["A user with same email or username already exists"],
           },
-          error.message || "User validation failed",
+          "User validation failed",
         );
       }
       throw error;
