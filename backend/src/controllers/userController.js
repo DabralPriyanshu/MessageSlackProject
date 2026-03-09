@@ -25,5 +25,21 @@ const signUp = async (req, res) => {
       .json(customErrorResponse(error));
   }
 };
+const signIn = async (req, res) => {
+  try {
+    const user = await userService.signIn(req.body);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(user, "User signed in successfully"));
+  } catch (error) {
+    console.log(error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(customErrorResponse(error));
+  }
+};
 
-export default { signUp };
+export default { signUp,signIn };

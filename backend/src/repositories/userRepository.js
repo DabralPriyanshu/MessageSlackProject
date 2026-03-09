@@ -5,9 +5,8 @@ class UserRepository extends CrudRepository {
     super(model);
   }
   async getUserByEmail(email) {
-    const response = await this.model
-      .findOne({ email: email })
-      .select("-password");
+    const response = await this.model.findOne({ email: email });
+
     return response;
   }
   async getUserByUsername(username) {
