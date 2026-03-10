@@ -6,7 +6,7 @@ import {
 } from "../utils/common/responseObjects.js";
 import jwt from "jsonwebtoken";
 import ENV from "../config/serverConfig.js";
-import UserRepository from "../repositories/userRepository";
+import UserRepository from "../repositories/userRepository.js";
 import User from "../models/userModel.js";
 const userRepository = new UserRepository(User);
 

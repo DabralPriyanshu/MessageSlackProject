@@ -2,7 +2,8 @@ import CrudRepository from "./crudRepository.js";
 
 class ChannelRepository extends CrudRepository {
   constructor(model) {
-    this.model = model;
+    super(model);
   }
+
 }
 export default ChannelRepository;

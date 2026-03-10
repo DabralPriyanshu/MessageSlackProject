@@ -25,5 +25,9 @@ class CrudRepository {
     });
     return response;
   }
+  async deleteMany(modelIds) {
+    const response = await this.model.deleteMany({ _id: { $in: modelIds } });
+    return response;
+  }
 }
 export default CrudRepository;

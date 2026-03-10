@@ -66,7 +66,9 @@ class WorkspaceRepository extends CrudRepository {
     return workspace;
   }
   async addChannelToWorkspace(workspaceId, channelName) {
-    const workspace = await this.getById(workspaceId).populate("channels");
+    const workspace = await this.model
+      .findById(workspaceId)
+      .populate("channels");
     if (!workspace) {
       throw new ClientError({
         message: "Workspace not found",
@@ -90,9 +92,11 @@ class WorkspaceRepository extends CrudRepository {
     return workspace;
   }
   async fetchAllWorkspaceByMemberId(memberId) {
-    const workspaces = await this.getAll({
-      "members.memberId": memberId,
-    }).populate("members.memberId", "username email avatar");
+    const workspaces = await this.model
+      .find({
+        "members.memberId": memberId,
+      })
+      .populate("members.memberId", "username email avatar");
     return workspaces;
   }
 }
