@@ -2,7 +2,11 @@ import express from "express";
 import workspaceController from "../../controllers/workspaceController.js";
 import { isAuthenticated } from "../../middlewares/authMiddleware.js";
 import { validate } from "../../validators/zodValidator.js";
-import { workspaceSchema } from "../../validators/workspaceSchema.js";
+import {
+  addChannelToWorkspaceSchema,
+  addMemberToWorkspaceSchema,
+  workspaceSchema,
+} from "../../validators/workspaceSchema.js";
 
 const workspaceRouter = express.Router();
 
@@ -41,11 +45,13 @@ workspaceRouter.put(
 workspaceRouter.put(
   "/:workspaceId/members",
   isAuthenticated,
+  validate(addMemberToWorkspaceSchema),
   workspaceController.addMemberToWorkspace,
 );
 workspaceRouter.put(
   "/:workspaceId/channels",
   isAuthenticated,
+  validate(addChannelToWorkspaceSchema),
   workspaceController.addChannelToWorkspace,
 );
 export default workspaceRouter;

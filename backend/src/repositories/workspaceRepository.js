@@ -79,6 +79,7 @@ class WorkspaceRepository extends CrudRepository {
   async addChannelToWorkspace(workspaceId, channelName, userId) {
     const workspace = await this.model
       .findById(workspaceId)
+      .populate("members.memberId", "username email avatar")
       .populate("channels");
     if (!workspace) {
       throw new ClientError({
@@ -87,10 +88,9 @@ class WorkspaceRepository extends CrudRepository {
         statusCode: StatusCodes.NOT_FOUND,
       });
     }
-    console.log(workspace);
     const isAdmin = workspace.members.find(
       (member) =>
-        member.memberId.toString() === userId && member.role === "admin",
+        member.memberId._id.toString() === userId && member.role === "admin",
     );
     if (!isAdmin) {
       throw new ClientError({
@@ -109,7 +109,10 @@ class WorkspaceRepository extends CrudRepository {
         statusCode: StatusCodes.BAD_REQUEST,
       });
     }
-    const channel = await channelRepository.create({ name: channelName });
+    const channel = await channelRepository.create({
+      name: channelName,
+      workspaceId: workspaceId,
+    });
     workspace.channels.push(channel._id);
     await workspace.save();
     return workspace;

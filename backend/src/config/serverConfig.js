@@ -7,4 +7,6 @@ export default {
   NODE_ENV: process.env.NODE_ENV || "development",
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
   JWT_EXPIRY: process.env.JWT_EXPIRY,
+  MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+  MAIL_ID: process.env.MAIL_ID,
 };
