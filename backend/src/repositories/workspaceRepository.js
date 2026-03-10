@@ -23,7 +23,7 @@ class WorkspaceRepository extends CrudRepository {
     return workspace;
   }
   async getWorkspaceByJoinCode(joinCode) {
-    const workspace = await this.model.findOne({ joinCode: joinCode });
+    const workspace = await this.model.findOne({ joinCode });
     if (!workspace) {
       throw new ClientError({
         message: "Workspace not found",
@@ -33,13 +33,24 @@ class WorkspaceRepository extends CrudRepository {
     }
     return workspace;
   }
-  async addMemberToWorkspace(workspaceId, memberId, role) {
+  async addMemberToWorkspace(workspaceId, memberId, role, userId) {
     const workspace = await this.getById(workspaceId);
     if (!workspace) {
       throw new ClientError({
         message: "Workspace not found",
         explanation: "Invalid data sent from the client",
         statusCode: StatusCodes.NOT_FOUND,
+      });
+    }
+    const isAdmin = workspace.members.find(
+      (member) =>
+        member.memberId.toString() === userId && member.role === "admin",
+    );
+    if (!isAdmin) {
+      throw new ClientError({
+        message: "User is not allowed to add channel",
+        explanation: "Invalid data sent from the client",
+        statusCode: StatusCodes.FORBIDDEN,
       });
     }
     const isValidUser = await User.findById(memberId);
@@ -65,7 +76,7 @@ class WorkspaceRepository extends CrudRepository {
     await workspace.save();
     return workspace;
   }
-  async addChannelToWorkspace(workspaceId, channelName) {
+  async addChannelToWorkspace(workspaceId, channelName, userId) {
     const workspace = await this.model
       .findById(workspaceId)
       .populate("channels");
@@ -76,8 +87,20 @@ class WorkspaceRepository extends CrudRepository {
         statusCode: StatusCodes.NOT_FOUND,
       });
     }
+    console.log(workspace);
+    const isAdmin = workspace.members.find(
+      (member) =>
+        member.memberId.toString() === userId && member.role === "admin",
+    );
+    if (!isAdmin) {
+      throw new ClientError({
+        message: "User is not allowed to add channel",
+        explanation: "Invalid data sent from the client",
+        statusCode: StatusCodes.FORBIDDEN,
+      });
+    }
     const isChannelAlreadyInWorkspace = workspace.channels.find(
-      (channel) => channel.name === channelName,
+      (channel) => channel.name.toLowerCase() === channelName.toLowerCase(),
     );
     if (isChannelAlreadyInWorkspace) {
       throw new ClientError({

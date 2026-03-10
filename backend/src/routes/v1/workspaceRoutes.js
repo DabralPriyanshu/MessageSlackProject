@@ -22,5 +22,30 @@ workspaceRouter.delete(
   isAuthenticated,
   workspaceController.deleteWorkspace,
 );
+workspaceRouter.get(
+  "/:workspaceId",
+  isAuthenticated,
+  workspaceController.getWorkspace,
+);
 
+workspaceRouter.get(
+  "/join/:joinCode",
+  isAuthenticated,
+  workspaceController.getWorkspaceByJoinCode,
+);
+workspaceRouter.put(
+  "/:workspaceId",
+  isAuthenticated,
+  workspaceController.updateWorkspace,
+);
+workspaceRouter.put(
+  "/:workspaceId/members",
+  isAuthenticated,
+  workspaceController.addMemberToWorkspace,
+);
+workspaceRouter.put(
+  "/:workspaceId/channels",
+  isAuthenticated,
+  workspaceController.addChannelToWorkspace,
+);
 export default workspaceRouter;
