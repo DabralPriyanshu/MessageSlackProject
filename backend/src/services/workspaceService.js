@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from "uuid";
 import ValidationError from "../utils/errors/validationError.js";
 import ClientError from "../utils/errors/clientError.js";
 import { StatusCodes } from "http-status-codes";
+import { addEmailToMailQueue } from "../producers/mailQueueProducer.js";
+import { workspaceJoinMail } from "../utils/common/mailObject.js";
 
 class WorkspaceService {
   constructor(workspaceRepository) {
@@ -180,12 +182,17 @@ class WorkspaceService {
   }
   async addMemberToWorkspace(workspaceId, memberId, role, userId) {
     try {
-      const workspace = await this.workspaceRepository.addMemberToWorkspace(
-        workspaceId,
-        memberId,
-        role,
-        userId,
-      );
+      const { workspace, isValidUser } =
+        await this.workspaceRepository.addMemberToWorkspace(
+          workspaceId,
+          memberId,
+          role,
+          userId,
+        );
+      addEmailToMailQueue({
+        ...workspaceJoinMail(workspace),
+        to: isValidUser.email,
+      });
       return workspace;
     } catch (error) {
       console.log("Error adding member to workspace ", error);

@@ -74,7 +74,7 @@ class WorkspaceRepository extends CrudRepository {
     }
     workspace.members.push({ memberId, role });
     await workspace.save();
-    return workspace;
+    return { workspace, isValidUser };
   }
   async addChannelToWorkspace(workspaceId, channelName, userId) {
     const workspace = await this.model
