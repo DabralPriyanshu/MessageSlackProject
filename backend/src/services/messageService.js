@@ -33,6 +33,15 @@ class MessageService {
       );
     } catch (error) {
       console.log("Error fetching messages", error);
+      throw error;
+    }
+  }
+  async createMessage(message) {
+    try {
+      return await this.messageRepository.create(message);
+    } catch (error) {
+      console.log("Error creating messages", error);
+      throw error;
     }
   }
 }

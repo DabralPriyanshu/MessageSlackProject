@@ -1,9 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 import ClientError from "../utils/errors/clientError.js";
+import MessageRepository from "../repositories/messageRepository.js";
+import Message from "../models/messageModel.js";
 
 class ChannelService {
   constructor(channelRepository) {
     this.channelRepository = channelRepository;
+    this.messageRepository = new MessageRepository(Message);
   }
 
   async getChannelById(channelId, userId) {
@@ -29,8 +32,13 @@ class ChannelService {
           statusCode: StatusCodes.FORBIDDEN,
         });
       }
-
-      return channel;
+      const messages = await this.messageRepository.getPaginatedMessages(
+        { channelId: channelId },
+        1,
+        20,
+      );
+      const response = { channel: channel, messages: messages };
+      return response;
     } catch (error) {
       console.log("Error fetching channel by ID", error);
       throw error;

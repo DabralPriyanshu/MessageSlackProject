@@ -2,7 +2,7 @@ import CrudRepository from "./crudRepository.js";
 
 class MessageRepository extends CrudRepository {
   constructor(model) {
-    this.model = model;
+    super(model);
   }
   async getPaginatedMessages(messageParams, page, limit) {
     const messages = await this.model
@@ -14,4 +14,4 @@ class MessageRepository extends CrudRepository {
     return messages;
   }
 }
-export default MessageRepository
+export default MessageRepository;
