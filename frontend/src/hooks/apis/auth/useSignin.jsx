@@ -10,11 +10,15 @@ export const useSignin = () => {
     mutateAsync: signinMutation,
   } = useMutation({
     mutationFn: signInRequest,
-    onSuccess: (data) => {
+    onSuccess: (response) => {
+      const userObject = JSON.stringify(response.data);
+      localStorage.setItem("user", userObject);
+     //so that we don't have to parse the string to object every time
+      localStorage.setItem("token", response.data.token);
       toast.success("Login Successful!", {
         description: "Welcome back to your workspace! 👋",
       });
-      console.log("Successfully signed in", data);
+      console.log("Successfully signed in", response);
     },
     onError: (error) => {
       const errorMessage =
