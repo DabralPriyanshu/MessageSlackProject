@@ -2,11 +2,11 @@ import React from "react";
 // import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Auth from "@/pages/auth/Auth";
-import SigninCard from "@/components/organisms/Auth/SigninCard";
 import Notfound from "@/pages/Notfound/Notfound";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SignupContainer from "@/components/organisms/Auth/SignupContainer";
 import { Toaster } from "@/components/ui/sonner";
+import SigninContainer from "./components/organisms/Auth/SigninContainer";
 const App = () => {
   const queryClient = new QueryClient();
   return (
@@ -26,7 +26,7 @@ const App = () => {
           path="/auth/signin"
           element={
             <Auth>
-              <SigninCard />
+              <SigninContainer />
             </Auth>
           }
         />
