@@ -6,6 +6,7 @@ import SigninCard from "@/components/organisms/Auth/SigninCard";
 import Notfound from "@/pages/Notfound/Notfound";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SignupContainer from "@/components/organisms/Auth/SignupContainer";
+import { Toaster } from "@/components/ui/sonner";
 const App = () => {
   const queryClient = new QueryClient();
   return (
@@ -31,6 +32,7 @@ const App = () => {
         />
         <Route path="/*" element={<Notfound />} />
       </Routes>
+      <Toaster />
     </QueryClientProvider>
   );
 };

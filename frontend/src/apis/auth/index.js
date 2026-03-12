@@ -1,5 +1,6 @@
 import API from "@/config/axiosConfig";
 
+
 export const signUpRequest = async ({ email, password, username }) => {
   try {
     const response = await API.post("/users/signup", {
