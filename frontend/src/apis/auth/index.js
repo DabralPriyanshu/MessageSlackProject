@@ -1,6 +1,6 @@
 import API from "@/config/axiosConfig";
 
-export const signUpRequest = async ({email, password, username}) => {
+export const signUpRequest = async ({ email, password, username }) => {
   try {
     const response = await API.post("/users/signup", {
       email,
@@ -11,10 +11,10 @@ export const signUpRequest = async ({email, password, username}) => {
     return response.data;
   } catch (error) {
     console.error(error);
-    throw error.response.data;
+    return error.response.data;
   }
 };
-export const signInRequest = async ({email, password}) => {
+export const signInRequest = async ({ email, password }) => {
   try {
     const response = await API.post("/users/signin", {
       email,

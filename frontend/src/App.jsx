@@ -2,19 +2,22 @@ import React from "react";
 // import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Auth from "@/pages/auth/Auth";
-import SignupCard from "@/components/organisms/Auth/SignupCard";
 import SigninCard from "@/components/organisms/Auth/SigninCard";
 import Notfound from "@/pages/Notfound/Notfound";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import SignupContainer from "@/components/organisms/Auth/SignupContainer";
 const App = () => {
+  const queryClient = new QueryClient();
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
+      {" "}
       <Routes>
         <Route path="/" element={<h1>Home </h1>} />
         <Route
           path="/auth/signup"
           element={
             <Auth>
-              <SignupCard />
+              <SignupContainer />
             </Auth>
           }
         />
@@ -28,7 +31,7 @@ const App = () => {
         />
         <Route path="/*" element={<Notfound />} />
       </Routes>
-    </>
+    </QueryClientProvider>
   );
 };
 

@@ -6,6 +6,7 @@ import apiRoutes from "./routes/apiRoutes.js";
 import bullServerAdapter from "./config/bullBoardConfig.js";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import cors from "cors"
 import MessageSocketHandlers from "./controllers/messageSocketController.js";
 import ChannelSocketHandlers from "./controllers/channelSocketController.js";
 
@@ -14,6 +15,7 @@ const server = createServer(app);
 const io = new Server(server);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({origin:ENV.FRONTEND_URL}))
 app.get("/ping", (req, res) => {
   res.status(StatusCodes.OK).json({ message: "pong" });
 });

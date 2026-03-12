@@ -9,6 +9,7 @@ export default {
   JWT_EXPIRY: process.env.JWT_EXPIRY,
   MAIL_PASSWORD: process.env.MAIL_PASSWORD,
   MAIL_ID: process.env.MAIL_ID,
-  REDIS_HOST:process.env.REDIS_HOST,
-  REDIS_PORT:process.env.REDIS_PORT
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_PORT: process.env.REDIS_PORT,
+  FRONTEND_URL: process.env.FRONTEND_URL,
 };

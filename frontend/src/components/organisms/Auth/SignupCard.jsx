@@ -8,17 +8,19 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { LucideLoader2, TriangleAlert } from "lucide-react";
 import { Link } from "react-router-dom";
+ import {FaCheck} from "react-icons/fa"
 
-const SignupCard = () => {
-  const [signupForm, setSignupForm] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    username: "",
-  });
-
+const SignupCard = ({
+  signupForm,
+  setSignupForm,
+  validationError,
+  onSignupFormSubmit,
+  error,
+  isSuccess,
+  isPending,
+}) => {
   return (
     <Card className="w-full h-full">
       <CardHeader>
@@ -26,9 +28,28 @@ const SignupCard = () => {
           <h1>Sign Up</h1>
         </CardTitle>
         <CardDescription>Sign up to access your account</CardDescription>
+        {validationError && (
+          <div className="bg-destructive/15 p-4 rounded-md flex items-center gap-x-2 text-sm  text-destructive mb-6">
+            <TriangleAlert className="size-5" />
+            <p>{validationError.message}</p>
+          </div>
+        )}
+        {error && (
+          <div className="bg-destructive/15 p-4 rounded-md flex items-center gap-x-2 text-sm  text-destructive mb-6">
+            <TriangleAlert className="size-5" />
+            <p>{error.message}</p>
+          </div>
+        )}
+        {isSuccess && (
+          <div className="bg-primary/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-primary">
+            <FaCheck className="size-5" />
+            <p>Successfully signed up</p>
+            <LucideLoader2 className="animate-spin ml-2" />
+          </div>
+        )}
       </CardHeader>
       <CardContent>
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={onSignupFormSubmit}>
           <Input
             placeholder="Email"
             required
@@ -37,7 +58,7 @@ const SignupCard = () => {
             }
             value={signupForm.email}
             type="email"
-            disabled={false}
+            disabled={isPending}
           />
           <Input
             placeholder=" Your username"
@@ -47,7 +68,7 @@ const SignupCard = () => {
             }
             value={signupForm.username}
             type="text"
-            disabled={false}
+            disabled={isPending}
           />
           <Input
             placeholder="Password"
@@ -57,7 +78,7 @@ const SignupCard = () => {
             }
             value={signupForm.password}
             type="password"
-            disabled={false}
+            disabled={isPending}
           />
           <Input
             placeholder="Confirm Password"
@@ -67,7 +88,7 @@ const SignupCard = () => {
             }
             value={signupForm.confirmPassword}
             type="password"
-            disabled={false}
+            disabled={isPending}
           />
           <Button disabled={false} size="lg" type="submit" className="w-full">
             Continue
