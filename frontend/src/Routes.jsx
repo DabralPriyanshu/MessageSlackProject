@@ -4,6 +4,7 @@ import SigninContainer from "@/components/organisms/Auth/SigninContainer";
 import Notfound from "@/pages/Notfound/Notfound";
 import Auth from "@/pages/auth/Auth";
 import ProtectedRoute from "./components/molecules/ProtectedRoute/ProtectedRoute";
+import Home from "./pages/home/Home";
 
 const AppRoutes = () => {
   return (
@@ -12,7 +13,7 @@ const AppRoutes = () => {
         path="/"
         element={
           <ProtectedRoute>
-            <h1>Home </h1>
+            <Home />
           </ProtectedRoute>
         }
       />

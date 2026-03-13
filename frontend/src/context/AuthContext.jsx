@@ -17,8 +17,13 @@ export const AuthContextProvider = ({ children }) => {
       setAuth({ user: null, token: null, isLoading: false });
     }
   }, []);
+  async function logout() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setAuth({ user: null, token: null, isLoading: false });
+  }
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth,logout }}>
       {children}
     </AuthContext.Provider>
   );
