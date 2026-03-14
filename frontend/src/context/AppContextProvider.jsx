@@ -1,3 +1,4 @@
 import combineContext from "@/utils/combineContext";
 import { AuthContextProvider } from "./AuthContext";
-export const AppContextProvider=combineContext(AuthContextProvider)
+import { CreateWorkspaceProvider } from "./CreateWorkspaceContext";
+export const AppContextProvider=combineContext(AuthContextProvider,CreateWorkspaceProvider)

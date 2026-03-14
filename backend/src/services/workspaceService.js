@@ -31,16 +31,20 @@ class WorkspaceService {
         joinCode,
       });
 
-      await this.workspaceRepository.addMemberToWorkspace(
-        response._id,
-        workspaceData.owner,
-        "admin",
-      );
+      // await this.workspaceRepository.addMemberToWorkspace(
+      //   response._id,
+      //   workspaceData.owner,
+      //   "admin",
+      //   workspaceData.owner,
+      // );
+      response.members.push({ memberId: workspaceData.owner, role: "admin" });
+      await response.save();
 
       const updatedWorkspace =
         await this.workspaceRepository.addChannelToWorkspace(
           response._id,
           "general",
+          workspaceData.owner,
         );
 
       return updatedWorkspace;

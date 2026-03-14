@@ -11,7 +11,7 @@ export const useCreateWorkspace = () => {
     mutateAsync: createWorkspaceMutation,
   } = useMutation({
     mutationFn: (data) => {
-      createWorkspaceRequest({ ...data, token: auth?.token });
+      return createWorkspaceRequest({ ...data, token: auth?.token });
     },
     onSuccess: (data) => {
       console.log(data);
