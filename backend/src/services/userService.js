@@ -55,6 +55,7 @@ class UserService {
         username: user.username,
         avatar: user.avatar,
         email: user.email,
+        _id: user._id,
         token: token,
       };
     } catch (error) {

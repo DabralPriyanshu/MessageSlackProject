@@ -11,6 +11,12 @@ class WorkspaceRepository extends CrudRepository {
   constructor(model) {
     super(model);
   }
+  async getWorkspaceDetailsById(workspaceId) {
+    const workspace = await this.model
+      .findById(workspaceId)
+      .populate("members.memberId", "username email avatar")
+      .populate("channels");
+  }
   async getWorkspaceByName(workspaceName) {
     const workspace = await this.model.findOne({ name: workspaceName });
     if (!workspace) {
