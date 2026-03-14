@@ -14,7 +14,7 @@ const Home = () => {
     if (workspaces?.length === 0 || !workspaces) {
       console.log("empty");
     } else {
-      navigate(`workspace/${workspaces[0]._id}`);
+      navigate(`workspaces/${workspaces[0]._id}`);
     }
   }, [workspaces, isFetching, navigate]);
   return (

@@ -35,7 +35,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/workspace/:workspaceId"
+        path="/workspaces/:workspaceId"
         element={
           <ProtectedRoute>
             <WorkspaceLayout>Workspace</WorkspaceLayout>
