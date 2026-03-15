@@ -12,4 +12,6 @@ export default {
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_PORT: process.env.REDIS_PORT,
   FRONTEND_URL: process.env.FRONTEND_URL,
+  APP_LINK: process.env.APP_LINK,
+  ENABLE_EMAIL_VERIFICATION: process.env.ENABLE_EMAIL_VERIFICATION,
 };

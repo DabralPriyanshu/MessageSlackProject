@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from "uuid";
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -15,6 +16,9 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
     avatar: { type: String },
+    isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String },
+    verificationTokenExpiry: { type: Date },
   },
   { timestamps: true },
 );
@@ -26,6 +30,8 @@ userSchema.pre("save", async function saveUser(next) {
 
   if (this.isNew) {
     this.avatar = `https://robohash.org/${this.username}`;
+    this.verificationToken=uuidv4().substring(0,10).toUpperCase();
+    this.verificationTokenExpiry=Date.now() + 3600000; // 1 hour
   }
   return next;
 });

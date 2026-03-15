@@ -3,6 +3,9 @@ import ClientError from "../utils/errors/clientError.js";
 import ValidationError from "../utils/errors/validationError.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/common/authUtils.js";
+import ENV from "../config/serverConfig.js";
+import { addEmailToMailQueue } from "../producers/mailQueueProducer.js";
+import { verifyEmailMail } from "../utils/common/mailObject.js";
 
 class UserService {
   constructor(userRepository) {
@@ -10,7 +13,14 @@ class UserService {
   }
   async signUp(data) {
     try {
-      return await this.userRepository.create(data);
+      const newUser = await this.userRepository.create(data);
+      if (ENV.ENABLE_EMAIL_VERIFICATION==="true") {
+        // SEND EMAIL VERIFICATION MAIL
+        addEmailToMailQueue({
+          ...verifyEmailMail(newUser.verificationToken),
+          to: newUser.email,
+        });
+      }
     } catch (error) {
       console.log(error);
       if (error.name === "ValidationError") {
@@ -58,6 +68,35 @@ class UserService {
         _id: user._id,
         token: token,
       };
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  async verifyEmail(verificationToken) {
+    try {
+      const user =
+        await this.userRepository.getUserByVerificationToken(verificationToken);
+      if (!user) {
+        throw new ClientError({
+          message: "Invalid verification token",
+          explanation: `Invalid data sent from client`,
+          statusCode: StatusCodes.NOT_FOUND,
+        });
+      }
+      //check if token is expired
+      if (user.verificationTokenExpiry < Date.now()) {
+        throw new ClientError({
+          message: "Verification token expired",
+          explanation: `Verification token has expired. Please request for a new verification email.`,
+          statusCode: StatusCodes.BAD_REQUEST,
+        });
+      }
+      user.isVerified = true;
+      user.verificationToken = null;
+      user.verificationTokenExpiry = null;
+      await user.save();
+      return user;
     } catch (error) {
       console.log(error);
       throw error;

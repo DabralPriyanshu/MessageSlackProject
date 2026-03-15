@@ -41,5 +41,22 @@ const signIn = async (req, res) => {
       .json(customErrorResponse(error));
   }
 };
+const verifyEmailController = async (req, res) => {
+  try {
+    const { verificationToken } = req.params;
+    const user = await userService.verifyEmail(verificationToken);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(user, "Email verified successfully"));
+  } catch (error) {
+    console.log(error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(customErrorResponse(error));
+  }
+};
 
-export default { signUp,signIn };
+export default { signUp, signIn, verifyEmailController };

@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 import MessageSocketHandlers from "./controllers/messageSocketController.js";
 import ChannelSocketHandlers from "./controllers/channelSocketController.js";
+import userController from "./controllers/userController.js";
 
 const app = express();
 const server = createServer(app);
@@ -21,6 +22,7 @@ app.get("/ping", (req, res) => {
 });
 app.use("/ui", bullServerAdapter.getRouter());
 app.use("/api", apiRoutes);
+app.get("/verify/:verificationToken", userController.verifyEmailController);
 
 io.on("connection", (socket) => {
   // console.log("User connected ", socket.id);

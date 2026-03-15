@@ -15,5 +15,9 @@ class UserRepository extends CrudRepository {
       .select("-password");
     return response;
   }
+  async getUserByVerificationToken(verificationToken) {
+    const response = await this.model.findOne({ verificationToken: verificationToken });
+    return response;    
+  }
 }
 export default UserRepository;
