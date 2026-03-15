@@ -32,7 +32,7 @@ const CreateWorkspaceModal = () => {
       });
       console.dir(data);
       setTimeout(() => {
-        navigate(`/workspace/${data?._id}`);
+        navigate(`/workspaces/${data?._id}`);
       }, 2000);
     } catch (error) {
       console.log("Not able toc create a new workspace ", error);

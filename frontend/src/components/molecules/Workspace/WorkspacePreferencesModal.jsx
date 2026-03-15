@@ -4,12 +4,41 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useDeleteWorkspace } from "@/hooks/apis/workspaces/useDeleteWorkspace";
 import { useWorkspacePreferencesModal } from "@/hooks/context/useWorkspacePreferencesModal";
+import { useQueryClient } from "@tanstack/react-query";
 import { TrashIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const WorkspacePreferencesModal = () => {
-  const { initialValue, openPreferences, setOpenPreferences } =
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [workspaceId, setWorkspaceId] = useState(null);
+  const { initialValue, openPreferences, setOpenPreferences, workspace } =
     useWorkspacePreferencesModal();
+
+  const { deleteWorkspaceMutation } = useDeleteWorkspace(workspaceId);
+  async function handleDelete() {
+    try {
+      await deleteWorkspaceMutation();
+      queryClient.invalidateQueries({ queryKey: ["fetchWorkspaces"] });
+      console.log("Delete workspace");
+      toast.success("Workspace deleted successfully");
+      setOpenPreferences(false);
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } catch (error) {
+      toast.error("Error in deleting workspace");
+      console.log("Error in deleting workspace", error);
+    }
+  }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setWorkspaceId(workspace?._id);
+  }, [workspace]);
 
   return (
     <Dialog open={openPreferences} onOpenChange={setOpenPreferences}>
@@ -25,7 +54,10 @@ const WorkspacePreferencesModal = () => {
             </div>
             <p className="text-sm">{initialValue}</p>
             <div>
-              <button className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg w-full border mt-4 hover:bg-gray-50">
+              <button
+                className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg w-full border mt-4 hover:bg-gray-50"
+                onClick={handleDelete}
+              >
                 <TrashIcon className="size-5" />
                 <p>Delete Workspace</p>
               </button>
