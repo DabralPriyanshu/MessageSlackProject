@@ -1,71 +1,159 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { TrashIcon, PencilIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useDeleteWorkspace } from "@/hooks/apis/workspaces/useDeleteWorkspace";
+import { useUpdateWorkspace } from "@/hooks/apis/workspaces/useUpdateWorkspace";
 import { useWorkspacePreferencesModal } from "@/hooks/context/useWorkspacePreferencesModal";
-import { useQueryClient } from "@tanstack/react-query";
-import { TrashIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useConfirm } from "@/hooks/useConfirm.jsx";
 
 const WorkspacePreferencesModal = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [workspaceId, setWorkspaceId] = useState(null);
-  const { initialValue, openPreferences, setOpenPreferences, workspace } =
+
+  const { openPreferences, setOpenPreferences, workspace } =
     useWorkspacePreferencesModal();
 
-  const { deleteWorkspaceMutation } = useDeleteWorkspace(workspaceId);
-  async function handleDelete() {
+  const [editOpen, setEditOpen] = useState(false);
+  const [renameValue, setRenameValue] = useState(workspace?.name || "");
+  const { confirmation, ConfirmDialog } = useConfirm({
+    title: "Do you want to delete the workspace?",
+    message: "This action cannot be undone.",
+  });
+  const { confirmation: updateConfirmation, ConfirmDialog: UpdateDialog } =
+    useConfirm({
+      title: "Do you want to update the workspace?",
+      message: "This action cannot be undone.",
+    });
+
+  const { deleteWorkspaceMutation } = useDeleteWorkspace(workspace?._id);
+  const { updateWorkspaceMutation, isPending: isUpdating } = useUpdateWorkspace(
+    workspace?._id,
+  );
+
+  const handleRename = async (e) => {
+    e.preventDefault();
     try {
+      const ok = await updateConfirmation();
+      console.log("Confirmation received");
+      if (!ok) {
+        return;
+      }
+      await updateWorkspaceMutation(renameValue);
+      queryClient.invalidateQueries(["fetchWorkspaceById", workspace?._id]);
+      setEditOpen(false);
+      toast.success("Workspace updated");
+    } catch (error) {
+      toast.error("Failed to update workspace");
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const ok = await confirmation();
+      console.log("Confirmation received");
+      if (!ok) {
+        return;
+      }
       await deleteWorkspaceMutation();
       queryClient.invalidateQueries({ queryKey: ["fetchWorkspaces"] });
-      console.log("Delete workspace");
-      toast.success("Workspace deleted successfully");
+      toast.success("Workspace deleted");
       setOpenPreferences(false);
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      navigate("/");
     } catch (error) {
-      toast.error("Error in deleting workspace");
-      console.log("Error in deleting workspace", error);
+      toast.error("Error deleting workspace");
     }
-  }
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setWorkspaceId(workspace?._id);
-  }, [workspace]);
+  };
 
   return (
-    <Dialog open={openPreferences} onOpenChange={setOpenPreferences}>
-      <DialogContent className="p-0 bg-gray-50 overflow-hidden">
-        <DialogHeader className="p-4 border-b bg-white">
-          <DialogTitle>{initialValue}</DialogTitle>
-        </DialogHeader>
-        <div className="px-4 pb-4 flex flex-col gap-y-2">
-          <div className="px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold text-sm">Workspace Name</p>
-              <p className="text-sm font-semibold hover:underline">Edit</p>
+    <>
+      <ConfirmDialog />
+      <UpdateDialog />
+      {/* Main Preferences Modal */}
+      <Dialog open={openPreferences} onOpenChange={setOpenPreferences}>
+        <DialogContent className="p-0 bg-slate-50 overflow-hidden max-w-md">
+          <DialogHeader className="p-4 border-b bg-white">
+            <DialogTitle className="text-xl font-bold">
+              Workspace Settings
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="p-4 flex flex-col gap-y-4">
+            {/* Rename Section */}
+            <div
+              onClick={() => {
+                setEditOpen(true);
+                setRenameValue(workspace?.name);
+              }}
+              className="group flex flex-col gap-y-1 bg-white p-4 rounded-xl border cursor-pointer hover:border-blue-400 transition shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold uppercase text-muted-foreground">
+                  Workspace Name
+                </p>
+                <span className="text-sm font-semibold text-blue-600 group-hover:underline">
+                  Edit
+                </span>
+              </div>
+              <p className="text-sm font-medium">{workspace?.name}</p>
             </div>
-            <p className="text-sm">{initialValue}</p>
-            <div>
+
+            {/* Danger Zone */}
+            <div className="bg-white p-4 rounded-xl border border-red-100 shadow-sm flex flex-col gap-y-3">
               <button
-                className="flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg w-full border mt-4 hover:bg-gray-50"
                 onClick={handleDelete}
+                className="flex items-center justify-center gap-x-2 w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg border border-red-200 transition active:scale-95"
               >
-                <TrashIcon className="size-5" />
-                <p>Delete Workspace</p>
+                <TrashIcon className="size-4" />
+                <span className="text-sm font-bold">Delete Workspace</span>
               </button>
             </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      {/* Separate Edit Dialog (Not Nested) */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Rename Workspace</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleRename} className="space-y-4">
+            <Input
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              disabled={isUpdating}
+              placeholder="Workspace Name"
+              autoFocus
+            />
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setEditOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isUpdating}>
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

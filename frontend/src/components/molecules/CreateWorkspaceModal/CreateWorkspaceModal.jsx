@@ -8,10 +8,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useCreateWorkspace } from "@/hooks/apis/workspaces/useCreateWorkspace";
 import { useCreateWorkspaceModal } from "@/hooks/context/useCreateWorkspaceModal";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateWorkspaceModal = () => {
+  const queryClient = useQueryClient();
   const { openCreateWorkspaceModel, setOpenCreateWorkspaceModal } =
     useCreateWorkspaceModal();
   const navigate = useNavigate();
@@ -31,6 +33,7 @@ const CreateWorkspaceModal = () => {
         description: workspaceDetails.description,
       });
       console.dir(data);
+      queryClient.invalidateQueries({ queryKey: ["fetchWorkspaces"] });
       setTimeout(() => {
         navigate(`/workspaces/${data?._id}`);
       }, 2000);
