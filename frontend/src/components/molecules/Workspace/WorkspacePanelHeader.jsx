@@ -23,6 +23,7 @@ const WorkspacePanelHeader = ({ workspace }) => {
     workspaceMembers?.find((member) => member.memberId._id === auth?.user._id)
       ?.role === "admin";
   console.log(isLoggedInUserAdmin);
+  console.log(workspace);
 
   useEffect(() => {
     setWorkspace(workspace);
@@ -35,7 +36,7 @@ const WorkspacePanelHeader = ({ workspace }) => {
         setOpenInviteModal={setOpenInviteModal}
         workspaceName={workspace?.name}
         joinCode={workspace?.joinCode}
-        workspaceId={workspace?.id}
+        workspaceId={workspace?._id}
       />
 
       <div className="flex items-center justify-between px-4 h-[50px] gap-0.5">

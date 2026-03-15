@@ -18,6 +18,8 @@ export const WorkspaceInviteModal = ({
   joinCode,
   workspaceId,
 }) => {
+  console.log("printing workspace id", workspaceId);
+
   const { resetJoinCodeMutation } = useResetJoinCode(workspaceId);
 
   async function handleCopy() {
