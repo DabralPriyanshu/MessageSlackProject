@@ -6,6 +6,7 @@ import Auth from "@/pages/auth/Auth";
 import ProtectedRoute from "./components/molecules/ProtectedRoute/ProtectedRoute";
 import Home from "./pages/home/Home";
 import WorkspaceLayout from "./pages/workspace/Layout";
+import JoinPage from "./pages/workspace/JoinPage";
 
 const AppRoutes = () => {
   return (
@@ -46,6 +47,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/workspaces/join/:workspaceId" element={<JoinPage />} />
       <Route path="*" element={<Notfound />} />
     </Routes>
   );

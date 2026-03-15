@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useResetJoinCode } from "@/hooks/apis/workspaces/useResetJoinCode";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 export const WorkspaceInviteModal = ({
   openInviteModal,
@@ -55,14 +56,14 @@ export const WorkspaceInviteModal = ({
           </Button>
 
           {/* Link to redirect the user in a new tab to the join page */}
-          <a
-            href={`/workspaces/join/${workspaceId}`}
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            to={`/workspaces/join/${workspaceId}`}
+            // target="_blank"
+            // rel="noreferrer"
             className="text-blue-500"
           >
             Redirect to join page
-          </a>
+          </Link>
         </div>
         <div className="flex items-center justify-center w-full">
           <Button variant="outline" onClick={handleResetCode}>
