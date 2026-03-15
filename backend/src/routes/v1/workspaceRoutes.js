@@ -37,6 +37,12 @@ workspaceRouter.get(
   isAuthenticated,
   workspaceController.getWorkspaceByJoinCode,
 );
+
+workspaceRouter.put(
+  "/:workspaceId/join",
+  isAuthenticated,
+  workspaceController.joinWorkspace,
+);
 workspaceRouter.put(
   "/:workspaceId",
   isAuthenticated,
@@ -59,4 +65,5 @@ workspaceRouter.put(
   isAuthenticated,
   workspaceController.resetJoinCode,
 );
+
 export default workspaceRouter;

@@ -248,5 +248,36 @@ class WorkspaceService {
       throw error;
     }
   }
+  async joinWorkspace(workspaceId, joinCode, userId) {
+    try {
+      const workspace =
+        await this.workspaceRepository.getWorkspaceDetailsById(workspaceId);
+      if (!workspace) {
+        throw new ClientError({
+          message: "Workspace not found",
+          explanation: "Invalid data sent from the client",
+          statusCode: StatusCodes.NOT_FOUND,
+        });
+      }
+      if (workspace.joinCode !== joinCode) {
+        throw new ClientError({
+          message: "Invalid join code",
+          explanation: "Invalid data sent from the client",
+          statusCode: StatusCodes.UNAUTHORIZED,
+        });
+      }
+
+      const updatedWorkspace =
+        await this.workspaceRepository.addMemberToWorkspace(
+          workspaceId,
+          userId,
+          "member",
+        );
+      return updatedWorkspace;
+    } catch (error) {
+      console.log("Error joining workspace ", error);
+      throw error;
+    }
+  }
 }
 export default WorkspaceService;

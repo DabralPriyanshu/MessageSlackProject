@@ -40,48 +40,46 @@ class WorkspaceRepository extends CrudRepository {
     }
     return workspace;
   }
-  async addMemberToWorkspace(workspaceId, memberId, role, userId) {
-    const workspace = await this.getById(workspaceId);
+  async addMemberToWorkspace(workspaceId, memberId, role) {
+    const workspace = await this.model.findById(workspaceId);
+
     if (!workspace) {
       throw new ClientError({
+        explanation: "Invalid data sent from the client",
         message: "Workspace not found",
-        explanation: "Invalid data sent from the client",
-        statusCode: StatusCodes.NOT_FOUND,
-      });
-    }
-    const isAdmin = workspace.members.find(
-      (member) =>
-        member.memberId.toString() === userId && member.role === "admin",
-    );
-    if (!isAdmin) {
-      throw new ClientError({
-        message: "User is not allowed to add channel",
-        explanation: "Invalid data sent from the client",
-        statusCode: StatusCodes.FORBIDDEN,
-      });
-    }
-    const isValidUser = await User.findById(memberId);
-    if (!isValidUser) {
-      throw new ClientError({
-        message: "User not found",
-        explanation: "Invalid data sent from the client",
         statusCode: StatusCodes.NOT_FOUND,
       });
     }
 
-    const isAlreadyMember = workspace.members.find(
-      (m) => m.memberId === memberId,
-    );
-    if (isAlreadyMember) {
+    const isValidUser = await User.findById(memberId);
+    if (!isValidUser) {
       throw new ClientError({
-        message: "User is already a member of workspace",
         explanation: "Invalid data sent from the client",
-        statusCode: StatusCodes.BAD_REQUEST,
+        message: "User not found",
+        statusCode: StatusCodes.NOT_FOUND,
       });
     }
-    workspace.members.push({ memberId, role });
+
+    const isMemberAlreadyPartOfWorkspace = workspace.members.find(
+      (member) => member.memberId == memberId,
+    );
+
+    if (isMemberAlreadyPartOfWorkspace) {
+      throw new ClientError({
+        explanation: "Invalid data sent from the client",
+        message: "User already part of workspace",
+        statusCode: StatusCodes.FORBIDDEN,
+      });
+    }
+
+    workspace.members.push({
+      memberId,
+      role,
+    });
+
     await workspace.save();
-    return { workspace, isValidUser };
+
+    return workspace;
   }
   async addChannelToWorkspace(workspaceId, channelName, userId) {
     const workspace = await this.model

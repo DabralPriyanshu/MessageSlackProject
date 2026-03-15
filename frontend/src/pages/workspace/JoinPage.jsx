@@ -1,11 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { Link, useParams } from "react-router-dom";
+import { useJoinWorkspaceRequest } from "@/hooks/apis/workspaces/useJoinWorkspace";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import VerificationInput from "react-verification-input";
-
+import { toast } from "sonner";
 const JoinPage = () => {
   const { workspaceId } = useParams();
-  async function handleAddMemberToWorkspace() {
-    console.log("Add member to workspace");
+  const navigate = useNavigate();
+  const { joinWorkspaceMutation } = useJoinWorkspaceRequest(workspaceId);
+  async function handleAddMemberToWorkspace(joinCode) {
+    try {
+      await joinWorkspaceMutation(joinCode);
+      toast.success("You have successfully joined the workspace");
+      navigate(`/workspaces/${workspaceId}`);
+    } catch (error) {
+      console.log("Error in adding member to workspace", error);
+      toast.error(
+        "Failed to join the workspace. Please check the code and try again.",
+      );
+    }
   }
   return (
     <div className="h-[100vh] flex flex-col gap-y-8 items-center justify-center p-8 bg-white rounded-lg shadow-sm">
@@ -17,7 +29,7 @@ const JoinPage = () => {
         </div>
 
         <VerificationInput
-            onComplete={handleAddMemberToWorkspace}
+          onComplete={handleAddMemberToWorkspace}
           length={6}
           classNames={{
             container: "flex gap-x-2",
