@@ -17,7 +17,7 @@ class WorkspaceService {
   }
   async isUserMemberOfWorkspace(workspace, userId) {
     return workspace.members.find(
-      (member) => member.memberId.toString() === userId,
+      (member) => member.memberId._id.toString() === userId,
     );
   }
 
@@ -114,7 +114,8 @@ class WorkspaceService {
 
   async getWorkspace(workspaceId, userId) {
     try {
-      const workspace = await this.workspaceRepository.getById(workspaceId);
+      const workspace =
+        await this.workspaceRepository.getWorkspaceDetailsById(workspaceId);
       if (!workspace) {
         throw new ClientError({
           message: "Workspace not found",
@@ -216,6 +217,36 @@ class WorkspaceService {
       throw error;
     }
   }
-}
 
+  async resetJoinCode(workspaceId, userId) {
+    try {
+      const workspace = await this.workspaceRepository.getById(workspaceId);
+      if (!workspace) {
+        throw new ClientError({
+          message: "Workspace not found",
+          explanation: "Invalid data sent from the client",
+          statusCode: StatusCodes.NOT_FOUND,
+        });
+      }
+      const isAllowed = await this.isUserAdminOfWorkspace(workspace, userId);
+      if (!isAllowed) {
+        throw new ClientError({
+          message:
+            "User is not authorized to reset join code of this workspace",
+          explanation: "Invalid data sent from the client",
+          statusCode: StatusCodes.FORBIDDEN,
+        });
+      }
+      const newJoinCode = uuidv4().substring(0, 6).toUpperCase();
+      const updatedWorkspace = await this.workspaceRepository.update(
+        workspaceId,
+        { joinCode: newJoinCode },
+      );
+      return updatedWorkspace;
+    } catch (error) {
+      console.log("Error resetting join code of workspace ", error);
+      throw error;
+    }
+  }
+}
 export default WorkspaceService;

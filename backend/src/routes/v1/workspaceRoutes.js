@@ -54,4 +54,9 @@ workspaceRouter.put(
   validate(addChannelToWorkspaceSchema),
   workspaceController.addChannelToWorkspace,
 );
+workspaceRouter.put(
+  "/:workspaceId/joinCode/reset",
+  isAuthenticated,
+  workspaceController.resetJoinCode,
+);
 export default workspaceRouter;

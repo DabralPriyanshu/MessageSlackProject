@@ -35,6 +35,10 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/workspaces/:workspaceId/channels/:channelId"
+        element={<ProtectedRoute>channel</ProtectedRoute>}
+      />
+      <Route
         path="/workspaces/:workspaceId"
         element={
           <ProtectedRoute>

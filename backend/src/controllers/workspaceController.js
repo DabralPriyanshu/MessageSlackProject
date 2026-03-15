@@ -168,6 +168,26 @@ const addChannelToWorkspace = async (req, res) => {
       .json(customErrorResponse(error));
   }
 };
+const resetJoinCode = async (req, res) => {
+  try {
+    const response = await workspaceService.resetJoinCode(
+      req.params.workspaceId,
+      req.user,
+    );
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, "Join code reset successfully"));
+  } catch (error) {
+    console.log(error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(customErrorResponse(error));
+  }
+};
+
 
 export default {
   createWorkspace,
@@ -178,4 +198,5 @@ export default {
   updateWorkspace,
   addMemberToWorkspace,
   addChannelToWorkspace,
+  resetJoinCode,
 };
