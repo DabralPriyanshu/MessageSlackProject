@@ -11,7 +11,7 @@ const messageService = new MessageService(messageRepository);
 
 const getMessages = async (req, res) => {
   try {
-    const response = await this.messageService.getMessages(
+    const response = await messageService.getMessages(
       { channelId: req.params.channelId },
       req.query.page || 1,
       req.query.limit || 20,

@@ -13,7 +13,7 @@ import userController from "./controllers/userController.js";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, { cors: { origin: ENV.FRONTEND_URL } });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: ENV.FRONTEND_URL }));
@@ -25,7 +25,7 @@ app.use("/api", apiRoutes);
 app.get("/verify/:verificationToken", userController.verifyEmailController);
 
 io.on("connection", (socket) => {
-  // console.log("User connected ", socket.id);
+  console.log("User connected ", socket.id);
   // socket.emit("msg", { msg: "hello" });
   MessageSocketHandlers(io, socket);
   ChannelSocketHandlers(io, socket);
