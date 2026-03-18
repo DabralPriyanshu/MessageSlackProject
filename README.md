@@ -1,4 +1,4 @@
-<img width="1920" height="1080" alt="Screenshot (43)" src="https://github.com/user-attachments/assets/c9460eac-f8e6-4fe5-8e31-99feced9a7a4" />
+<img width="1920" height="1080" alt="Screenshot (47)" src="https://github.com/user-attachments/assets/d416c7af-775c-4f74-946c-b38e71a91c71" />
 <img width="1920" height="1080" alt="Screenshot (44)" src="https://github.com/user-attachments/assets/7d7fc92c-8797-4706-9ffa-15f39c33403f" />
 MessageSlack – Real-Time Team Communication Platform
 
