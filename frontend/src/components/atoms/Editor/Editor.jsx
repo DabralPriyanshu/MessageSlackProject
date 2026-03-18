@@ -21,7 +21,7 @@ export const Editor = ({
 
     const [image, setImage] = useState(null);
 
-    const containerRef = useRef(); // reqd to initialize the editor
+    const containerRef = useRef(); 
     const defaultValueRef = useRef();
     const quillRef = useRef();
     const imageInputRef = useRef(null);

@@ -16,7 +16,7 @@ export const uploadImageToAWSpresignedUrl = async ({ url, file }) => {
     }
 };
 
-export const getPreginedUrl = async ({ token }) => {
+export const getPresignedUrl = async ({ token }) => {
     try {
         const response = await axiosConfig.get('/messages/pre-signed-url', {
             headers: {

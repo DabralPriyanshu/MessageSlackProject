@@ -5,6 +5,11 @@ import messageController from "../../controllers/messageController.js";
 const messageRouter = express.Router();
 
 messageRouter.get(
+  "/pre-signed-url",
+  isAuthenticated,
+  messageController.getPresignedUrl,
+);
+messageRouter.get(
   "/:channelId",
   isAuthenticated,
   messageController.getMessages,

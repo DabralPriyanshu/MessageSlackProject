@@ -59,10 +59,10 @@ const WorkspacePanel = () => {
         {workspace?.channels?.map((channel) => {
           return (
             <SideBarItem
-              key={channel._id}
+              key={channel?._id}
               icon={HashIcon}
-              label={channel.name}
-              id={channel._id}
+              label={channel?.name}
+              id={channel?._id}
             />
           );
         })}
@@ -74,7 +74,7 @@ const WorkspacePanel = () => {
             <UserItem
               key={item.memberId._id}
               label={item.memberId.username}
-              id={item.memberId._id}
+              id={item?.memberId._id}
               image={item.memberId.avatar}
             />
           );

@@ -2,10 +2,12 @@ import { StatusCodes } from "http-status-codes";
 import Message from "../models/messageModel.js";
 import MessageRepository from "../repositories/messageRepository.js";
 import MessageService from "../services/messageService.js";
+import ENV from "../config/serverConfig.js";
 import {
   customErrorResponse,
   successResponse,
 } from "../utils/common/responseObjects.js";
+import { s3 } from "../config/awsConfig.js";
 const messageRepository = new MessageRepository(Message);
 const messageService = new MessageService(messageRepository);
 
@@ -30,4 +32,25 @@ const getMessages = async (req, res) => {
       .json(customErrorResponse(error));
   }
 };
-export default { getMessages };
+export const getPresignedUrl = async (req, res) => {
+  try {
+    const url = await s3.getSignedUrlPromise("putObject", {
+      Bucket: ENV.AWS_BUCKET_NAME,
+      Key: `${Date.now()}`,
+      Expires: 60,
+    });
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse({ url }, "Presigned URL fetched successfully"));
+  } catch (error) {
+    console.log(error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(customErrorResponse(error));
+  }
+};
+
+export default { getMessages, getPresignedUrl };

@@ -13,6 +13,7 @@
   "type": "module",
   "dependencies": {
     "@bull-board/express": "^6.20.3",
+    "aws-sdk": "^2.1693.0",
     "bcryptjs": "^3.0.3",
     "bull": "^4.16.5",
     "cors": "^2.8.6",
